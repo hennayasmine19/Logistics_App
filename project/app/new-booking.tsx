@@ -13,6 +13,7 @@ interface BookingData {
   receiverName: string;
   receiverPhone: string;
   receiverEmail: string;
+  packageCategory: string; // Added for category selection
 }
 
 export default function NewBookingScreen() {
@@ -26,12 +27,14 @@ export default function NewBookingScreen() {
     receiverName: '',
     receiverPhone: '',
     receiverEmail: '',
+    packageCategory: '', // Added for category selection
   });
 
   const [currentStep, setCurrentStep] = useState(1);
   const [showPickupModal, setShowPickupModal] = useState(false);
   const [showDropModal, setShowDropModal] = useState(false);
   const [showPackageTypeModal, setShowPackageTypeModal] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false); // Modal for category
   const [confirmationVisible, setConfirmationVisible] = useState(false);
   const [generatedRWB, setGeneratedRWB] = useState('');
 
@@ -78,7 +81,7 @@ export default function NewBookingScreen() {
       case 1:
         return bookingData.pickupPoint && bookingData.dropPoint && bookingData.pickupPoint !== bookingData.dropPoint;
       case 2:
-        return bookingData.packageType && bookingData.weight && bookingData.description;
+        return bookingData.packageCategory && bookingData.packageType && bookingData.weight && bookingData.description;
       case 3:
         return bookingData.receiverName && bookingData.receiverPhone && bookingData.receiverEmail;
       default:
@@ -191,7 +194,24 @@ export default function NewBookingScreen() {
   const renderStep2 = () => (
     <View style={styles.stepContent}>
       <Text style={styles.stepTitle}>Package Details</Text>
-      
+
+      {/* Package Category Dropdown */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Package Category *</Text>
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          onPress={() => setShowCategoryModal(true)}
+        >
+          <Text style={[
+            styles.dropdownText,
+            !bookingData.packageCategory && styles.placeholderText,
+          ]}>
+            {bookingData.packageCategory || 'Select category'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Package Type Dropdown */}
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Package Type *</Text>
         <TouchableOpacity
@@ -441,6 +461,35 @@ export default function NewBookingScreen() {
             <TouchableOpacity
               style={styles.modalCloseButton}
               onPress={() => setShowPackageTypeModal(false)}
+            >
+              <Text style={styles.modalCloseText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Package Category Modal */}
+      <Modal visible={showCategoryModal} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select Package Category</Text>
+            <ScrollView style={styles.optionsList}>
+              {['Personal', 'Commercial'].map((category, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.optionItem}
+                  onPress={() => {
+                    handleInputChange('packageCategory', category);
+                    setShowCategoryModal(false);
+                  }}
+                >
+                  <Text style={styles.optionText}>{category}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <TouchableOpacity
+              style={styles.modalCloseButton}
+              onPress={() => setShowCategoryModal(false)}
             >
               <Text style={styles.modalCloseText}>Cancel</Text>
             </TouchableOpacity>
