@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 import { Package, Plus, Search, Filter, Calendar, MapPin, Truck, CircleCheck as CheckCircle, Clock, CircleAlert as AlertCircle } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 export default function BookingsScreen() {
   const { user } = useAuth();
@@ -17,8 +18,17 @@ export default function BookingsScreen() {
 }
 
 function AdminBookingsManagement() {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+
+  const statusKeyMap: Record<string, string> = {
+    'Delivered': 'delivered',
+    'In Transit': 'inTransit',
+    'Delivery Pending': 'deliveryPending',
+    'Booked': 'booked',
+    'Pending': 'pending',
+  };
 
   const allBookings = [
     {
@@ -76,16 +86,26 @@ function AdminBookingsManagement() {
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    const key = statusKeyMap[status];
+    if (key) {
+      const translated = t(`adminBookings.${key}`);
+      // If translation returns the key itself, fallback to status
+      if (translated && !translated.startsWith('adminBookings.')) return translated;
+    }
+    return status;
+  };
+
   return (
     <View style={styles.container}>
-      <Header title="Bookings Management" />
+      <Header title={t('adminBookings.title')} />
       
       <View style={styles.searchContainer}>
         <View style={styles.searchInput}>
           <Search size={20} color="#6b7280" />
           <TextInput
             style={styles.searchText}
-            placeholder="Search by RWB, customer, route..."
+            placeholder={t('adminBookings.searchPlaceholder')}
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholderTextColor="#9ca3af"
@@ -103,15 +123,15 @@ function AdminBookingsManagement() {
         <View style={styles.stats}>
           <View style={styles.statItem}>
             <Text style={styles.statNumber}>24</Text>
-            <Text style={styles.statLabel}>Total Today</Text>
+            <Text style={styles.statLabel}>{t('adminBookings.totalToday')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statNumber}>18</Text>
-            <Text style={styles.statLabel}>In Transit</Text>
+            <Text style={styles.statLabel}>{t('adminBookings.inTransit')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statNumber}>7</Text>
-            <Text style={styles.statLabel}>Pending</Text>
+            <Text style={styles.statLabel}>{t('adminBookings.pending')}</Text>
           </View>
         </View>
 
@@ -132,7 +152,7 @@ function AdminBookingsManagement() {
                     booking.status === 'Delivery Pending' && styles.pendingText,
                     booking.status === 'Booked' && styles.bookedText,
                   ]}>
-                    {booking.status}
+                    {getStatusLabel(booking.status)}
                   </Text>
                 </View>
               </View>
@@ -158,10 +178,10 @@ function AdminBookingsManagement() {
 
               <View style={styles.actionButtons}>
                 <TouchableOpacity style={styles.updateButton}>
-                  <Text style={styles.updateButtonText}>Update Status</Text>
+                  <Text style={styles.updateButtonText}>{t('adminBookings.updateStatus')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.viewButton}>
-                  <Text style={styles.viewButtonText}>View Details</Text>
+                  <Text style={styles.viewButtonText}>{t('adminBookings.viewDetails')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -178,26 +198,26 @@ function AdminBookingsManagement() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.filterModal}>
-            <Text style={styles.modalTitle}>Filter Bookings</Text>
+            <Text style={styles.modalTitle}>{t('adminBookings.filterTitle')}</Text>
             <View style={styles.filterOptions}>
               <TouchableOpacity style={styles.filterOption}>
-                <Text style={styles.filterOptionText}>All Bookings</Text>
+                <Text style={styles.filterOptionText}>{t('adminBookings.allBookings')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.filterOption}>
-                <Text style={styles.filterOptionText}>In Transit</Text>
+                <Text style={styles.filterOptionText}>{t('adminBookings.inTransit')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.filterOption}>
-                <Text style={styles.filterOptionText}>Delivered</Text>
+                <Text style={styles.filterOptionText}>{t('adminBookings.delivered')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.filterOption}>
-                <Text style={styles.filterOptionText}>Pending Delivery</Text>
+                <Text style={styles.filterOptionText}>{t('adminBookings.deliveryPending')}</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setFilterModalVisible(false)}
             >
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Text style={styles.closeButtonText}>{t('adminBookings.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -207,6 +227,7 @@ function AdminBookingsManagement() {
 }
 
 function CustomerBookings() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('sent');
   
   const sentPackages = [
@@ -291,10 +312,10 @@ function CustomerBookings() {
                     </Text>
                   </View>
                 </View>
-                <Text style={styles.destinationText}>To: {pkg.destination}</Text>
-                <Text style={styles.receiverText}>Receiver: {pkg.receiver}</Text>
-                <Text style={styles.packageText}>Package: {pkg.package}</Text>
-                <Text style={styles.dateText}>Date: {pkg.date}</Text>
+                <Text style={styles.destinationText}>{t('bookings.to') + ': '}{pkg.destination}</Text>
+                <Text style={styles.receiverText}>{t('bookings.receiver') + ': '}{pkg.receiver}</Text>
+                <Text style={styles.packageText}>{t('bookings.package') + ': '}{pkg.package}</Text>
+                <Text style={styles.dateText}>{t('bookings.date') + ': '}{pkg.date}</Text>
               </View>
             ))}
           </View>
@@ -318,14 +339,14 @@ function CustomerBookings() {
                     </Text>
                   </View>
                 </View>
-                <Text style={styles.destinationText}>From: {pkg.from}</Text>
-                <Text style={styles.receiverText}>Sender: {pkg.sender}</Text>
-                <Text style={styles.packageText}>Package: {pkg.package}</Text>
-                <Text style={styles.etaText}>ETA: {pkg.eta}</Text>
+                <Text style={styles.destinationText}>{t('bookings.from') + ': '}{pkg.from}</Text>
+                <Text style={styles.receiverText}>{t('bookings.sender') + ': '}{pkg.sender}</Text>
+                <Text style={styles.packageText}>{t('bookings.package') + ': '}{pkg.package}</Text>
+                <Text style={styles.etaText}>{t('bookings.eta') + ': '}{pkg.eta}</Text>
                 
                 {pkg.status === 'Delivery Pending' && (
                   <TouchableOpacity style={styles.pickupButton}>
-                    <Text style={styles.pickupButtonText}>Pickup Instructions</Text>
+                    <Text style={styles.pickupButtonText}>{t('bookings.pickupInstructions')}</Text>
                   </TouchableOpacity>
                 )}
               </View>

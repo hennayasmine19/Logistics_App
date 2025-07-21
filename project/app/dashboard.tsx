@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 import { Package, Truck, MapPin, Clock, TrendingUp, Users, CircleCheck as CheckCircle, CircleAlert as AlertCircle, Plus } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 export default function DashboardScreen() {
   const { user } = useAuth();
@@ -17,22 +18,23 @@ export default function DashboardScreen() {
 }
 
 function AdminDashboard() {
+  const { t } = useTranslation();
   const todayStats = [
-    { title: 'Today\'s Bookings', value: '24', icon: Package, color: '#2563EB' },
-    { title: 'In Transit', value: '18', icon: Truck, color: '#F59E0B' },
-    { title: 'Delivered', value: '156', icon: CheckCircle, color: '#10B981' },
-    { title: 'Pending Delivery', value: '7', icon: AlertCircle, color: '#EF4444' },
+    { title: t('adminDashboard.todayBookings'), value: '24', icon: Package, color: '#2563EB' },
+    { title: t('adminDashboard.inTransit'), value: '18', icon: Truck, color: '#F59E0B' },
+    { title: t('adminDashboard.delivered'), value: '156', icon: CheckCircle, color: '#10B981' },
+    { title: t('adminDashboard.pendingDelivery'), value: '7', icon: AlertCircle, color: '#EF4444' },
   ];
 
   const recentBookings = [
-    { rwb: 'RWB001', route: 'Chennai → Coimbatore', status: 'In Transit', bus: 'TN07AB1234' },
-    { rwb: 'RWB002', route: 'Madurai → Salem', status: 'Delivered', bus: 'TN09CD5678' },
-    { rwb: 'RWB003', route: 'Trichy → Chennai', status: 'Booked', bus: 'TN37EF9012' },
+    { rwb: 'RWB001', route: 'Chennai → Coimbatore', status: t('adminDashboard.inTransit'), bus: 'TN07AB1234' },
+    { rwb: 'RWB002', route: 'Madurai → Salem', status: t('adminDashboard.delivered'), bus: 'TN09CD5678' },
+    { rwb: 'RWB003', route: 'Trichy → Chennai', status: t('adminDashboard.booked'), bus: 'TN37EF9012' },
   ];
 
   return (
     <View style={styles.container}>
-      <Header title="Admin Dashboard" />
+      <Header title={t('adminDashboard.title')} />
       <ScrollView style={styles.content}>
         <View style={styles.statsGrid}>
           {todayStats.map((stat, index) => (
@@ -47,51 +49,51 @@ function AdminDashboard() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recent Bookings</Text>
+          <Text style={styles.sectionTitle}>{t('adminDashboard.recentBookings')}</Text>
           {recentBookings.map((booking, index) => (
             <View key={index} style={styles.bookingCard}>
               <View style={styles.bookingHeader}>
                 <Text style={styles.rwbText}>{booking.rwb}</Text>
                 <View style={[
                   styles.statusBadge,
-                  booking.status === 'Delivered' && styles.deliveredBadge,
-                  booking.status === 'In Transit' && styles.transitBadge,
-                  booking.status === 'Booked' && styles.bookedBadge,
+                  booking.status === t('adminDashboard.delivered') && styles.deliveredBadge,
+                  booking.status === t('adminDashboard.inTransit') && styles.transitBadge,
+                  booking.status === t('adminDashboard.booked') && styles.bookedBadge,
                 ]}>
                   <Text style={[
                     styles.statusText,
-                    booking.status === 'Delivered' && styles.deliveredText,
-                    booking.status === 'In Transit' && styles.transitText,
-                    booking.status === 'Booked' && styles.bookedText,
+                    booking.status === t('adminDashboard.delivered') && styles.deliveredText,
+                    booking.status === t('adminDashboard.inTransit') && styles.transitText,
+                    booking.status === t('adminDashboard.booked') && styles.bookedText,
                   ]}>
                     {booking.status}
                   </Text>
                 </View>
               </View>
               <Text style={styles.routeText}>{booking.route}</Text>
-              <Text style={styles.busText}>Bus: {booking.bus}</Text>
+              <Text style={styles.busText}>{t('adminDashboard.bus')}: {booking.bus}</Text>
             </View>
           ))}
         </View>
 
         <View style={styles.quickActions}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <Text style={styles.sectionTitle}>{t('adminDashboard.quickActions')}</Text>
           <View style={styles.actionsGrid}>
             <TouchableOpacity style={styles.actionCard} onPress={() => router.push('/bookings')}>
               <Package size={24} color="#2563EB" />
-              <Text style={styles.actionText}>Manage Bookings</Text>
+              <Text style={styles.actionText}>{t('adminDashboard.manageBookings')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionCard} onPress={() => router.push('/pickup-points')}>
               <MapPin size={24} color="#10B981" />
-              <Text style={styles.actionText}>Pickup Points</Text>
+              <Text style={styles.actionText}>{t('adminDashboard.pickupPoints')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionCard} onPress={() => router.push('/bus-assignment')}>
               <Truck size={24} color="#F59E0B" />
-              <Text style={styles.actionText}>Bus Assignment</Text>
+              <Text style={styles.actionText}>{t('adminDashboard.busAssignment')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionCard} onPress={() => router.push('/user-logs')}>
               <Users size={24} color="#7C3AED" />
-              <Text style={styles.actionText}>User Logs</Text>
+              <Text style={styles.actionText}>{t('adminDashboard.userLogs')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -101,6 +103,7 @@ function AdminDashboard() {
 }
 
 function CustomerDashboard() {
+  const { t } = useTranslation();
   const recentPackages = [
     { rwb: 'RWB001', destination: 'Coimbatore', status: 'In Transit', date: '2024-01-15' },
     { rwb: 'RWB002', destination: 'Salem', status: 'Delivered', date: '2024-01-14' },
@@ -113,29 +116,29 @@ function CustomerDashboard() {
 
   return (
     <View style={styles.container}>
-      <Header title="TNSTC Cargo" />
+      <Header title={t('title')} />
       <ScrollView style={styles.content}>
         <View style={styles.welcomeCard}>
-          <Text style={styles.welcomeTitle}>Welcome back!</Text>
-          <Text style={styles.welcomeSubtitle}>Track your packages and book new shipments</Text>
+          <Text style={styles.welcomeTitle}>{t('dashboard.welcome')}</Text>
+          <Text style={styles.welcomeSubtitle}>{t('dashboard.subtitle')}</Text>
         </View>
 
         <View style={styles.quickActions}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <Text style={styles.sectionTitle}>{t('dashboard.quickActions')}</Text>
           <View style={styles.actionsGrid}>
             <TouchableOpacity style={styles.actionCard} onPress={() => router.push('/new-booking')}>
               <Plus size={24} color="#2563EB" />
-              <Text style={styles.actionText}>New Booking</Text>
+              <Text style={styles.actionText}>{t('dashboard.newBooking')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionCard} onPress={() => router.push('/tracking')}>
               <MapPin size={24} color="#10B981" />
-              <Text style={styles.actionText}>Track Package</Text>
+              <Text style={styles.actionText}>{t('dashboard.trackPackage')}</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recent Shipments</Text>
+          <Text style={styles.sectionTitle}>{t('dashboard.recentShipments')}</Text>
           {recentPackages.map((pkg, index) => (
             <View key={index} style={styles.packageCard}>
               <View style={styles.packageHeader}>
@@ -150,18 +153,18 @@ function CustomerDashboard() {
                     pkg.status === 'Delivered' && styles.deliveredText,
                     pkg.status === 'In Transit' && styles.transitText,
                   ]}>
-                    {pkg.status}
+                    {t(`dashboard.status.${pkg.status.replace(/ /g, '').toLowerCase()}`)}
                   </Text>
                 </View>
               </View>
-              <Text style={styles.destinationText}>To: {pkg.destination}</Text>
+              <Text style={styles.destinationText}>{t('dashboard.to')} {pkg.destination}</Text>
               <Text style={styles.dateText}>{pkg.date}</Text>
             </View>
           ))}
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Incoming Packages</Text>
+          <Text style={styles.sectionTitle}>{t('dashboard.incomingPackages')}</Text>
           {incomingPackages.map((pkg, index) => (
             <View key={index} style={styles.packageCard}>
               <View style={styles.packageHeader}>
@@ -176,12 +179,12 @@ function CustomerDashboard() {
                     pkg.status === 'Delivery Pending' && styles.pendingText,
                     pkg.status === 'In Transit' && styles.transitText,
                   ]}>
-                    {pkg.status}
+                    {t(`dashboard.status.${pkg.status.replace(/ /g, '').toLowerCase()}`)}
                   </Text>
                 </View>
               </View>
-              <Text style={styles.destinationText}>From: {pkg.from}</Text>
-              <Text style={styles.etaText}>ETA: {pkg.eta}</Text>
+              <Text style={styles.destinationText}>{t('dashboard.from')} {pkg.from}</Text>
+              <Text style={styles.etaText}>{t('dashboard.eta')} {pkg.eta}</Text>
             </View>
           ))}
         </View>

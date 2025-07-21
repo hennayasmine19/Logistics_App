@@ -3,6 +3,7 @@ import { ScrollView, View, Text, StyleSheet, TouchableOpacity, TextInput, Modal 
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 import { Package, Plus, Search, Filter, Calendar, MapPin, Truck, CircleCheck as CheckCircle, Clock, CircleAlert as AlertCircle } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function BookingsScreen() {
   const { user } = useAuth();
@@ -206,6 +207,7 @@ function AdminBookingsManagement() {
 }
 
 function CustomerBookings() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('sent');
   const [newBookingModalVisible, setNewBookingModalVisible] = useState(false);
   
@@ -249,7 +251,7 @@ function CustomerBookings() {
 
   return (
     <View style={styles.container}>
-      <Header title="My Bookings" />
+      <Header title={t('bookings.myBookings')} />
       
       <View style={styles.tabContainer}>
         <TouchableOpacity
@@ -257,7 +259,7 @@ function CustomerBookings() {
           onPress={() => setActiveTab('sent')}
         >
           <Text style={[styles.tabText, activeTab === 'sent' && styles.activeTabText]}>
-            Sent Packages
+            {t('bookings.sentPackages')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -265,7 +267,7 @@ function CustomerBookings() {
           onPress={() => setActiveTab('received')}
         >
           <Text style={[styles.tabText, activeTab === 'received' && styles.activeTabText]}>
-            Incoming
+            {t('bookings.incoming')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -291,10 +293,10 @@ function CustomerBookings() {
                     </Text>
                   </View>
                 </View>
-                <Text style={styles.destinationText}>To: {pkg.destination}</Text>
-                <Text style={styles.receiverText}>Receiver: {pkg.receiver}</Text>
-                <Text style={styles.packageText}>Package: {pkg.package}</Text>
-                <Text style={styles.dateText}>Date: {pkg.date}</Text>
+                <Text style={styles.destinationText}>{t('bookings.to') + ': '}{pkg.destination}</Text>
+                <Text style={styles.receiverText}>{t('bookings.receiver') + ': '}{pkg.receiver}</Text>
+                <Text style={styles.packageText}>{t('bookings.package') + ': '}{pkg.package}</Text>
+                <Text style={styles.dateText}>{t('bookings.date') + ': '}{pkg.date}</Text>
               </View>
             ))}
           </View>
@@ -318,14 +320,14 @@ function CustomerBookings() {
                     </Text>
                   </View>
                 </View>
-                <Text style={styles.destinationText}>From: {pkg.from}</Text>
-                <Text style={styles.receiverText}>Sender: {pkg.sender}</Text>
-                <Text style={styles.packageText}>Package: {pkg.package}</Text>
-                <Text style={styles.etaText}>ETA: {pkg.eta}</Text>
+                <Text style={styles.destinationText}>{t('bookings.from') + ': '}{pkg.from}</Text>
+                <Text style={styles.receiverText}>{t('bookings.sender') + ': '}{pkg.sender}</Text>
+                <Text style={styles.packageText}>{t('bookings.package') + ': '}{pkg.package}</Text>
+                <Text style={styles.etaText}>{t('bookings.eta') + ': '}{pkg.eta}</Text>
                 
                 {pkg.status === 'Delivery Pending' && (
                   <TouchableOpacity style={styles.pickupButton}>
-                    <Text style={styles.pickupButtonText}>Pickup Instructions</Text>
+                    <Text style={styles.pickupButtonText}>{t('bookings.pickupInstructions')}</Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -350,8 +352,8 @@ function CustomerBookings() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.bookingModal}>
-            <Text style={styles.modalTitle}>New Booking</Text>
-            <Text style={styles.modalSubtitle}>Create a new package booking</Text>
+            <Text style={styles.modalTitle}>{t('bookings.newBooking')}</Text>
+            <Text style={styles.modalSubtitle}>{t('bookings.createNewPackageBooking')}</Text>
             
             <TouchableOpacity
               style={styles.modalButton}
@@ -360,14 +362,14 @@ function CustomerBookings() {
                 // Navigate to new booking screen
               }}
             >
-              <Text style={styles.modalButtonText}>Start New Booking</Text>
+              <Text style={styles.modalButtonText}>{t('bookings.startNewBooking')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity
               style={styles.cancelButton}
               onPress={() => setNewBookingModalVisible(false)}
             >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={styles.cancelButtonText}>{t('bookings.cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>

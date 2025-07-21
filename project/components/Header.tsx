@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Bell, X, LogOut, Settings, User, Package, MapPin, ChartBar as BarChart3, Truck, Users, History, Plus, Chrome as Home } from 'lucide-react-native';
+import { Menu, Bell, X, LogOut, Settings, User, Package, MapPin, ChartBar as BarChart3, Truck, Users, History, Plus, Chrome as Home, Globe } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 interface HeaderProps {
   title: string;
@@ -14,6 +15,8 @@ export default function Header({ title, showMenu = true }: HeaderProps) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [notificationVisible, setNotificationVisible] = useState(false);
   const isAdmin = user?.role === 'admin';
+  const { i18n, t } = useTranslation();
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
   const handleLogout = () => {
     setMenuVisible(false);
@@ -26,6 +29,11 @@ export default function Header({ title, showMenu = true }: HeaderProps) {
     router.push(route as any);
   };
 
+  const handleLanguageChange = async (lang: string) => {
+    await i18n.changeLanguage(lang);
+    setLanguageModalVisible(false);
+  };
+
   const notifications = [
     { id: 1, title: 'Package RWB001 delivered', time: '2 hours ago', type: 'success' },
     { id: 2, title: 'Package RWB002 in transit', time: '4 hours ago', type: 'info' },
@@ -33,23 +41,23 @@ export default function Header({ title, showMenu = true }: HeaderProps) {
   ];
 
   const adminMenuItems = [
-    { icon: Home, label: 'Dashboard', route: '/dashboard' },
-    { icon: Package, label: 'Bookings Management', route: '/bookings' },
-    { icon: MapPin, label: 'Track Packages', route: '/tracking' },
-    { icon: MapPin, label: 'Pickup Points', route: '/pickup-points' },
-    { icon: Truck, label: 'Bus Assignment', route: '/bus-assignment' },
-    { icon: Users, label: 'User Logs', route: '/user-logs' },
-    { icon: Settings, label: 'Settings', route: '/settings' },
+    { icon: Home, label: 'Dashboard', key: 'dashboard', route: '/dashboard' },
+    { icon: Package, label: 'Bookings Management', key: 'bookings', route: '/bookings' },
+    { icon: MapPin, label: 'Track Packages', key: 'tracking', route: '/tracking' },
+    { icon: MapPin, label: 'Pickup Points', key: 'pickuppoints', route: '/pickup-points' },
+    { icon: Truck, label: 'Bus Assignment', key: 'busassignment', route: '/bus-assignment' },
+    { icon: Users, label: 'User Logs', key: 'userlogs', route: '/user-logs' },
+    { icon: Settings, label: 'Settings', key: 'settings', route: '/settings' },
   ];
 
   const customerMenuItems = [
-    { icon: Home, label: 'Home', route: '/dashboard' },
-    { icon: Plus, label: 'New Booking', route: '/new-booking' },
-    { icon: Package, label: 'My Bookings', route: '/bookings' },
-    { icon: MapPin, label: 'Track Package', route: '/tracking' },
-    { icon: Package, label: 'Incoming Packages', route: '/confirmations' },
-    { icon: History, label: 'History', route: '/history' },
-    { icon: User, label: 'Profile', route: '/profile' },
+    { icon: Home, label: 'Home', key: 'dashboard', route: '/dashboard' },
+    { icon: Plus, label: 'New Booking', key: 'newbooking', route: '/new-booking' },
+    { icon: Package, label: 'My Bookings', key: 'bookings', route: '/bookings' },
+    { icon: MapPin, label: 'Track Package', key: 'tracking', route: '/tracking' },
+    { icon: Package, label: 'Incoming Packages', key: 'confirmations', route: '/confirmations' },
+    { icon: History, label: 'History', key: 'history', route: '/history' },
+    { icon: User, label: 'Profile', key: 'profile', route: '/profile' },
   ];
 
   const menuItems = isAdmin ? adminMenuItems : customerMenuItems;
@@ -63,11 +71,16 @@ export default function Header({ title, showMenu = true }: HeaderProps) {
               <Menu size={24} color="#374151" />
             </TouchableOpacity>
           )}
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title}>{t('title')}</Text>
         </View>
-        <TouchableOpacity onPress={() => setNotificationVisible(true)}>
-          <Bell size={24} color="#374151" />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+          <TouchableOpacity onPress={() => setLanguageModalVisible(true)} style={{ marginRight: 8 }}>
+            <Globe size={24} color="#374151" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setNotificationVisible(true)}>
+            <Bell size={24} color="#374151" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Hamburger Menu Modal */}
@@ -99,14 +112,14 @@ export default function Header({ title, showMenu = true }: HeaderProps) {
                   onPress={() => handleNavigation(item.route)}
                 >
                   <item.icon size={20} color="#374151" />
-                  <Text style={styles.menuItemText}>{item.label}</Text>
+                  <Text style={styles.menuItemText}>{t(`menu.${item.key}`)}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
 
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
               <LogOut size={20} color="#EF4444" />
-              <Text style={styles.logoutText}>Logout</Text>
+              <Text style={styles.logoutText}>{t('menu.logout')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -122,7 +135,7 @@ export default function Header({ title, showMenu = true }: HeaderProps) {
         <View style={styles.modalOverlay}>
           <View style={styles.notificationContainer}>
             <View style={styles.notificationHeader}>
-              <Text style={styles.notificationTitle}>Notifications</Text>
+              <Text style={styles.notificationTitle}>{t('notifications')}</Text>
               <TouchableOpacity onPress={() => setNotificationVisible(false)}>
                 <X size={24} color="#374151" />
               </TouchableOpacity>
@@ -143,6 +156,29 @@ export default function Header({ title, showMenu = true }: HeaderProps) {
                 </View>
               ))}
             </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Language Selection Modal */}
+      <Modal
+        visible={languageModalVisible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setLanguageModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={{ backgroundColor: '#fff', margin: 40, borderRadius: 12, padding: 24 }}>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16 }}>{t('select_language')}</Text>
+            <TouchableOpacity onPress={() => handleLanguageChange('en')} style={{ paddingVertical: 12 }}>
+              <Text style={{ fontSize: 16, color: i18n.language === 'en' ? '#2563EB' : '#374151' }}>{t('english')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleLanguageChange('ta')} style={{ paddingVertical: 12 }}>
+              <Text style={{ fontSize: 16, color: i18n.language === 'ta' ? '#2563EB' : '#374151' }}>{t('tamil')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setLanguageModalVisible(false)} style={{ marginTop: 16, alignSelf: 'flex-end' }}>
+              <Text style={{ color: '#EF4444', fontSize: 16 }}>{t('menu.logout')}</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Modal } from 'react-native';
 import Header from '@/components/Header';
 import { Package, MapPin, User, Phone, Mail, Weight, Ruler, FileText, CircleCheck as CheckCircle } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 interface BookingData {
   pickupPoint: string;
@@ -17,6 +18,7 @@ interface BookingData {
 }
 
 export default function NewBookingScreen() {
+  const { t } = useTranslation();
   const [bookingData, setBookingData] = useState<BookingData>({
     pickupPoint: '',
     dropPoint: '',
@@ -39,37 +41,28 @@ export default function NewBookingScreen() {
   const [generatedRWB, setGeneratedRWB] = useState('');
 
   const pickupPoints = [
-    'Chennai Koyambedu Bus Stand',
-    'Coimbatore Central Bus Stand',
-    'Madurai Central Bus Stand',
-    'Salem Central Bus Stand',
-    'Trichy Central Bus Stand',
-    'Tirunelveli Bus Stand',
-    'Vellore Bus Stand',
-    'Thanjavur Bus Stand',
+    t('newBooking.pickupPoints.chennai'),
+    t('newBooking.pickupPoints.coimbatore'),
+    t('newBooking.pickupPoints.madurai'),
+    t('newBooking.pickupPoints.salem'),
+    t('newBooking.pickupPoints.trichy'),
+    t('newBooking.pickupPoints.tirunelveli'),
+    t('newBooking.pickupPoints.vellore'),
+    t('newBooking.pickupPoints.thanjavur'),
   ];
 
-  const dropPoints = [
-    'Chennai Koyambedu Bus Stand',
-    'Coimbatore Central Bus Stand',
-    'Madurai Central Bus Stand',
-    'Salem Central Bus Stand',
-    'Trichy Central Bus Stand',
-    'Tirunelveli Bus Stand',
-    'Vellore Bus Stand',
-    'Thanjavur Bus Stand',
-  ];
+  const dropPoints = pickupPoints;
 
   const packageTypes = [
-    'Electronics',
-    'Documents',
-    'Clothing',
-    'Books',
-    'Medicines',
-    'Food Items',
-    'Gift Items',
-    'Household Items',
-    'Others',
+    t('newBooking.packageTypes.electronics'),
+    t('newBooking.packageTypes.documents'),
+    t('newBooking.packageTypes.clothing'),
+    t('newBooking.packageTypes.books'),
+    t('newBooking.packageTypes.medicines'),
+    t('newBooking.packageTypes.food'),
+    t('newBooking.packageTypes.gift'),
+    t('newBooking.packageTypes.household'),
+    t('newBooking.packageTypes.others'),
   ];
 
   const handleInputChange = (field: keyof BookingData, value: string) => {
@@ -145,10 +138,10 @@ export default function NewBookingScreen() {
 
   const renderStep1 = () => (
     <View style={styles.stepContent}>
-      <Text style={styles.stepTitle}>Select Pickup & Drop Points</Text>
+      <Text style={styles.stepTitle}>{t('newBooking.step1Title')}</Text>
       
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Pickup Point *</Text>
+        <Text style={styles.label}>{t('newBooking.pickupPointLabel')}</Text>
         <TouchableOpacity
           style={styles.dropdownButton}
           onPress={() => setShowPickupModal(true)}
@@ -158,13 +151,13 @@ export default function NewBookingScreen() {
             styles.dropdownText,
             !bookingData.pickupPoint && styles.placeholderText,
           ]}>
-            {bookingData.pickupPoint || 'Select pickup point'}
+            {bookingData.pickupPoint || t('newBooking.pickupPointPlaceholder')}
           </Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Drop Point *</Text>
+        <Text style={styles.label}>{t('newBooking.dropPointLabel')}</Text>
         <TouchableOpacity
           style={styles.dropdownButton}
           onPress={() => setShowDropModal(true)}
@@ -174,18 +167,18 @@ export default function NewBookingScreen() {
             styles.dropdownText,
             !bookingData.dropPoint && styles.placeholderText,
           ]}>
-            {bookingData.dropPoint || 'Select drop point'}
+            {bookingData.dropPoint || t('newBooking.dropPointPlaceholder')}
           </Text>
         </TouchableOpacity>
       </View>
 
       {bookingData.pickupPoint && bookingData.dropPoint && (
         <View style={styles.routeInfo}>
-          <Text style={styles.routeTitle}>Route Information</Text>
+          <Text style={styles.routeTitle}>{t('newBooking.routeInfoTitle')}</Text>
           <Text style={styles.routeText}>
             {bookingData.pickupPoint} → {bookingData.dropPoint}
           </Text>
-          <Text style={styles.estimatedTime}>Estimated Transit Time: 6-8 hours</Text>
+          <Text style={styles.estimatedTime}>{t('newBooking.estimatedTime')}</Text>
         </View>
       )}
     </View>
@@ -193,11 +186,11 @@ export default function NewBookingScreen() {
 
   const renderStep2 = () => (
     <View style={styles.stepContent}>
-      <Text style={styles.stepTitle}>Package Details</Text>
+      <Text style={styles.stepTitle}>{t('newBooking.step2Title')}</Text>
 
       {/* Package Category Dropdown */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Package Category *</Text>
+        <Text style={styles.label}>{t('newBooking.packageCategoryLabel')}</Text>
         <TouchableOpacity
           style={styles.dropdownButton}
           onPress={() => setShowCategoryModal(true)}
@@ -206,14 +199,14 @@ export default function NewBookingScreen() {
             styles.dropdownText,
             !bookingData.packageCategory && styles.placeholderText,
           ]}>
-            {bookingData.packageCategory || 'Select category'}
+            {bookingData.packageCategory || t('newBooking.packageCategoryPlaceholder')}
           </Text>
         </TouchableOpacity>
       </View>
 
       {/* Package Type Dropdown */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Package Type *</Text>
+        <Text style={styles.label}>{t('newBooking.packageTypeLabel')}</Text>
         <TouchableOpacity
           style={styles.dropdownButton}
           onPress={() => setShowPackageTypeModal(true)}
@@ -223,14 +216,14 @@ export default function NewBookingScreen() {
             styles.dropdownText,
             !bookingData.packageType && styles.placeholderText,
           ]}>
-            {bookingData.packageType || 'Select package type'}
+            {bookingData.packageType || t('newBooking.packageTypePlaceholder')}
           </Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.inputRow}>
         <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-          <Text style={styles.label}>Weight (kg) *</Text>
+          <Text style={styles.label}>{t('newBooking.weightLabel')}</Text>
           <View style={styles.inputContainer}>
             <Weight size={20} color="#6b7280" />
             <TextInput
@@ -245,7 +238,7 @@ export default function NewBookingScreen() {
         </View>
 
         <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
-          <Text style={styles.label}>Volume (L)</Text>
+          <Text style={styles.label}>{t('newBooking.volumeLabel')}</Text>
           <View style={styles.inputContainer}>
             <Ruler size={20} color="#6b7280" />
             <TextInput
@@ -261,14 +254,14 @@ export default function NewBookingScreen() {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Package Description *</Text>
+        <Text style={styles.label}>{t('newBooking.packageDescriptionLabel')}</Text>
         <View style={styles.textAreaContainer}>
           <FileText size={20} color="#6b7280" style={styles.textAreaIcon} />
           <TextInput
             style={styles.textArea}
             value={bookingData.description}
             onChangeText={(text) => handleInputChange('description', text)}
-            placeholder="Describe the contents of your package..."
+            placeholder={t('newBooking.packageDescriptionPlaceholder')}
             multiline
             numberOfLines={4}
             placeholderTextColor="#9ca3af"
@@ -280,31 +273,31 @@ export default function NewBookingScreen() {
 
   const renderStep3 = () => (
     <View style={styles.stepContent}>
-      <Text style={styles.stepTitle}>Receiver Details</Text>
+      <Text style={styles.stepTitle}>{t('newBooking.step3Title')}</Text>
       
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Receiver Name *</Text>
+        <Text style={styles.label}>{t('newBooking.receiverNameLabel')}</Text>
         <View style={styles.inputContainer}>
           <User size={20} color="#6b7280" />
           <TextInput
             style={styles.input}
             value={bookingData.receiverName}
             onChangeText={(text) => handleInputChange('receiverName', text)}
-            placeholder="Enter receiver's full name"
+            placeholder={t('newBooking.receiverNamePlaceholder')}
             placeholderTextColor="#9ca3af"
           />
         </View>
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Receiver Phone *</Text>
+        <Text style={styles.label}>{t('newBooking.receiverPhoneLabel')}</Text>
         <View style={styles.inputContainer}>
           <Phone size={20} color="#6b7280" />
           <TextInput
             style={styles.input}
             value={bookingData.receiverPhone}
             onChangeText={(text) => handleInputChange('receiverPhone', text)}
-            placeholder="+91 9876543210"
+            placeholder={t('newBooking.receiverPhonePlaceholder')}
             keyboardType="phone-pad"
             placeholderTextColor="#9ca3af"
           />
@@ -312,14 +305,14 @@ export default function NewBookingScreen() {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Receiver Email *</Text>
+        <Text style={styles.label}>{t('newBooking.receiverEmailLabel')}</Text>
         <View style={styles.inputContainer}>
           <Mail size={20} color="#6b7280" />
           <TextInput
             style={styles.input}
             value={bookingData.receiverEmail}
             onChangeText={(text) => handleInputChange('receiverEmail', text)}
-            placeholder="receiver@example.com"
+            placeholder={t('newBooking.receiverEmailPlaceholder')}
             keyboardType="email-address"
             autoCapitalize="none"
             placeholderTextColor="#9ca3af"
@@ -328,17 +321,17 @@ export default function NewBookingScreen() {
       </View>
 
       <View style={styles.summaryCard}>
-        <Text style={styles.summaryTitle}>Booking Summary</Text>
+        <Text style={styles.summaryTitle}>{t('newBooking.bookingSummaryTitle')}</Text>
         <View style={styles.summaryItem}>
-          <Text style={styles.summaryLabel}>Route:</Text>
+          <Text style={styles.summaryLabel}>{t('newBooking.routeLabel')}:</Text>
           <Text style={styles.summaryValue}>{bookingData.pickupPoint} → {bookingData.dropPoint}</Text>
         </View>
         <View style={styles.summaryItem}>
-          <Text style={styles.summaryLabel}>Package:</Text>
+          <Text style={styles.summaryLabel}>{t('newBooking.packageLabel')}:</Text>
           <Text style={styles.summaryValue}>{bookingData.packageType} ({bookingData.weight} kg)</Text>
         </View>
         <View style={styles.summaryItem}>
-          <Text style={styles.summaryLabel}>Receiver:</Text>
+          <Text style={styles.summaryLabel}>{t('newBooking.receiverLabel')}:</Text>
           <Text style={styles.summaryValue}>{bookingData.receiverName}</Text>
         </View>
       </View>
@@ -347,7 +340,7 @@ export default function NewBookingScreen() {
 
   return (
     <View style={styles.container}>
-      <Header title="New Booking" />
+      <Header title={t('newBooking.headerTitle')} />
       
       <ScrollView style={styles.content}>
         {renderStepIndicator()}
@@ -360,7 +353,7 @@ export default function NewBookingScreen() {
       <View style={styles.navigationButtons}>
         {currentStep > 1 && (
           <TouchableOpacity style={styles.backButton} onPress={prevStep}>
-            <Text style={styles.backButtonText}>Back</Text>
+            <Text style={styles.backButtonText}>{t('newBooking.backButtonText')}</Text>
           </TouchableOpacity>
         )}
         
@@ -369,14 +362,14 @@ export default function NewBookingScreen() {
             style={[styles.nextButton, currentStep === 1 && { flex: 1 }]}
             onPress={nextStep}
           >
-            <Text style={styles.nextButtonText}>Next</Text>
+            <Text style={styles.nextButtonText}>{t('newBooking.nextButtonText')}</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
             style={styles.submitButton}
             onPress={handleBookingSubmit}
           >
-            <Text style={styles.submitButtonText}>Create Booking</Text>
+            <Text style={styles.submitButtonText}>{t('newBooking.createBookingButtonText')}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -385,7 +378,7 @@ export default function NewBookingScreen() {
       <Modal visible={showPickupModal} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Pickup Point</Text>
+            <Text style={styles.modalTitle}>{t('newBooking.pickupPointModalTitle')}</Text>
             <ScrollView style={styles.optionsList}>
               {pickupPoints.map((point, index) => (
                 <TouchableOpacity
@@ -404,7 +397,7 @@ export default function NewBookingScreen() {
               style={styles.modalCloseButton}
               onPress={() => setShowPickupModal(false)}
             >
-              <Text style={styles.modalCloseText}>Cancel</Text>
+              <Text style={styles.modalCloseText}>{t('newBooking.cancelButtonText')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -414,7 +407,7 @@ export default function NewBookingScreen() {
       <Modal visible={showDropModal} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Drop Point</Text>
+            <Text style={styles.modalTitle}>{t('newBooking.dropPointModalTitle')}</Text>
             <ScrollView style={styles.optionsList}>
               {dropPoints.filter(point => point !== bookingData.pickupPoint).map((point, index) => (
                 <TouchableOpacity
@@ -433,7 +426,7 @@ export default function NewBookingScreen() {
               style={styles.modalCloseButton}
               onPress={() => setShowDropModal(false)}
             >
-              <Text style={styles.modalCloseText}>Cancel</Text>
+              <Text style={styles.modalCloseText}>{t('newBooking.cancelButtonText')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -443,7 +436,7 @@ export default function NewBookingScreen() {
       <Modal visible={showPackageTypeModal} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Package Type</Text>
+            <Text style={styles.modalTitle}>{t('newBooking.packageTypeModalTitle')}</Text>
             <ScrollView style={styles.optionsList}>
               {packageTypes.map((type, index) => (
                 <TouchableOpacity
@@ -462,7 +455,7 @@ export default function NewBookingScreen() {
               style={styles.modalCloseButton}
               onPress={() => setShowPackageTypeModal(false)}
             >
-              <Text style={styles.modalCloseText}>Cancel</Text>
+              <Text style={styles.modalCloseText}>{t('newBooking.cancelButtonText')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -472,7 +465,7 @@ export default function NewBookingScreen() {
       <Modal visible={showCategoryModal} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Package Category</Text>
+            <Text style={styles.modalTitle}>{t('newBooking.packageCategoryModalTitle')}</Text>
             <ScrollView style={styles.optionsList}>
               {['Personal', 'Commercial'].map((category, index) => (
                 <TouchableOpacity
@@ -491,7 +484,7 @@ export default function NewBookingScreen() {
               style={styles.modalCloseButton}
               onPress={() => setShowCategoryModal(false)}
             >
-              <Text style={styles.modalCloseText}>Cancel</Text>
+              <Text style={styles.modalCloseText}>{t('newBooking.cancelButtonText')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -504,10 +497,10 @@ export default function NewBookingScreen() {
             <View style={styles.successIcon}>
               <CheckCircle size={48} color="#10B981" />
             </View>
-            <Text style={styles.confirmationTitle}>Booking Created Successfully!</Text>
-            <Text style={styles.rwbNumber}>RWB: {generatedRWB}</Text>
+            <Text style={styles.confirmationTitle}>{t('newBooking.confirmationTitle')}</Text>
+            <Text style={styles.rwbNumber}>{t('newBooking.rwbNumber')}: {generatedRWB}</Text>
             <Text style={styles.confirmationMessage}>
-              Your package booking has been created. The receiver will be notified to confirm acceptance.
+              {t('newBooking.confirmationMessage')}
             </Text>
             <TouchableOpacity
               style={styles.confirmationButton}
@@ -516,7 +509,7 @@ export default function NewBookingScreen() {
                 // Navigate back to dashboard or bookings
               }}
             >
-              <Text style={styles.confirmationButtonText}>Done</Text>
+              <Text style={styles.confirmationButtonText}>{t('newBooking.doneButtonText')}</Text>
             </TouchableOpacity>
           </View>
         </View>

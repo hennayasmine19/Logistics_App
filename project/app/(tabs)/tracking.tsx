@@ -3,8 +3,10 @@ import { ScrollView, View, Text, StyleSheet, TextInput, TouchableOpacity } from 
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 import { Search, MapPin, Clock, CircleCheck as CheckCircle, Truck, Package, Calendar } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function TrackingScreen() {
+  const { t } = useTranslation();
   const [trackingId, setTrackingId] = useState('');
   const [trackingResult, setTrackingResult] = useState<any>(null);
 
@@ -143,21 +145,21 @@ export default function TrackingScreen() {
 
   return (
     <View style={styles.container}>
-      <Header title="Track Package" />
+      <Header title={t('tracking.title')} />
       
       <View style={styles.searchSection}>
         <View style={styles.searchContainer}>
           <Search size={20} color="#6b7280" />
           <TextInput
             style={styles.searchInput}
-            placeholder="Enter RWB number (try RWB001 or RWB002)"
+            placeholder={t('tracking.searchPlaceholder')}
             value={trackingId}
             onChangeText={setTrackingId}
             placeholderTextColor="#9ca3af"
           />
         </View>
         <TouchableOpacity style={styles.trackButton} onPress={handleTrack}>
-          <Text style={styles.trackButtonText}>Track</Text>
+          <Text style={styles.trackButtonText}>{t('tracking.trackButton')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -185,21 +187,21 @@ export default function TrackingScreen() {
               <View style={styles.currentLocationContainer}>
                 <MapPin size={16} color="#2563EB" />
                 <Text style={styles.currentLocationText}>
-                  Current Location: {trackingResult.currentLocation}
+                  {t('tracking.currentLocation', { location: trackingResult.currentLocation })}
                 </Text>
               </View>
 
               {trackingResult.status === 'Delivered' ? (
                 <View style={styles.deliveryInfo}>
                   <Text style={styles.deliveryText}>
-                    Delivered on {trackingResult.deliveredAt}
+                    {t('tracking.deliveredOn', { date: trackingResult.deliveredAt })}
                   </Text>
                 </View>
               ) : (
                 <View style={styles.etaContainer}>
                   <Clock size={16} color="#F59E0B" />
                   <Text style={styles.etaText}>
-                    ETA: {trackingResult.estimatedDelivery}
+                    {t('tracking.eta', { eta: trackingResult.estimatedDelivery })}
                   </Text>
                 </View>
               )}
@@ -269,27 +271,25 @@ export default function TrackingScreen() {
         ) : trackingId !== '' && !trackingResult ? (
           <View style={styles.noResultCard}>
             <Package size={48} color="#6b7280" />
-            <Text style={styles.noResultTitle}>Package Not Found</Text>
+            <Text style={styles.noResultTitle}>{t('tracking.notFoundTitle')}</Text>
             <Text style={styles.noResultText}>
-              Please check your RWB number and try again.
-              Try "RWB001" or "RWB002" for demo data.
+              {t('tracking.notFoundText')}
             </Text>
           </View>
         ) : (
           <View style={styles.instructionsCard}>
             <Package size={48} color="#2563EB" />
-            <Text style={styles.instructionsTitle}>Track Your Package</Text>
+            <Text style={styles.instructionsTitle}>{t('tracking.instructionsTitle')}</Text>
             <Text style={styles.instructionsText}>
-              Enter your RWB (Roadway Bill) number above to track your package in real-time.
-              You can find the RWB number in your booking confirmation.
+              {t('tracking.instructionsText')}
             </Text>
           </View>
         )}
 
         {/* Quick Track Options */}
         <View style={styles.quickTrackCard}>
-          <Text style={styles.cardTitle}>Quick Track</Text>
-          <Text style={styles.quickTrackSubtitle}>Try these demo RWB numbers:</Text>
+          <Text style={styles.cardTitle}>{t('tracking.quickTrack')}</Text>
+          <Text style={styles.quickTrackSubtitle}>{t('tracking.quickTrackSubtitle')}</Text>
           <View style={styles.quickTrackButtons}>
             <TouchableOpacity
               style={styles.quickTrackButton}
@@ -298,7 +298,7 @@ export default function TrackingScreen() {
                 handleTrack();
               }}
             >
-              <Text style={styles.quickTrackButtonText}>RWB001 (In Transit)</Text>
+              <Text style={styles.quickTrackButtonText}>{t('tracking.quickTrackRWB001')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.quickTrackButton}
@@ -307,7 +307,7 @@ export default function TrackingScreen() {
                 handleTrack();
               }}
             >
-              <Text style={styles.quickTrackButtonText}>RWB002 (Delivered)</Text>
+              <Text style={styles.quickTrackButtonText}>{t('tracking.quickTrackRWB002')}</Text>
             </TouchableOpacity>
           </View>
         </View>
