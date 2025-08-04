@@ -30,16 +30,16 @@ This is the frontend of a mobile-based logistics management application develope
 ### Installation
 
 1. Clone the repository:
- git clone 
+ git clone https://github.com/hennayasmine19/Logistics_App.git
 
 2. Navigate to the project directory:
-cd 
+cd Logistics_App
 
 3. Install dependencies:
 npm install 
 
 4. Start the development server:
-npm run dev
+npm run dev / npx expo start
 
 
 
